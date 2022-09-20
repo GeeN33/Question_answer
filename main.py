@@ -1,6 +1,5 @@
 import json
 import random
-questions = []
 
 class Question:
     """
@@ -20,41 +19,38 @@ class Question:
         self.balls = int(self.complexity) * 10
         return self.balls
 
-    def is_correct(self, answer:str) -> None:
+    def is_correct(self, answer:str) -> bool:
         """Возвращает True, если ответ пользователя совпадает
         с верным ответов иначе False.
         """
         if answer == self.answer:
             self.answer_f = True
-            self.build_positive_feedback()
+            return self.answer_f
+
         else:
             self.answer_f = False
-            self.build_negative_feedback()
+            return self.answer_f
 
-    def build_question(self) -> None:
-
+    def build_question(self) -> str:
         """Возвращает вопрос в понятном пользователю виде, например:
         Вопрос: What do people often call American flag?
         Сложность 4/5
         """
-        print(f'Вопрос: {self.question}')
-        print(f'Сложность: {self.complexity}/5')
+        return f'Вопрос: {self.question} \nСложность: {self.complexity}/5'
 
-    def build_positive_feedback(self) -> None:
 
+    def build_positive_feedback(self) -> str:
         """Возвращает :
         Ответ верный, получено __ баллов
         """
-        print(f'Ответ верный, получено {self.get_points()} баллов')
-        print('-------------------------------------------')
+        return f'Ответ верный, получено {self.get_points()} баллов'
 
-    def build_negative_feedback(self) -> None:
 
+    def build_negative_feedback(self) -> str:
         """Возвращает :
         Ответ неверный, верный ответ __
         """
-        print(f'Ответ неверный, верный ответ {self.answer}')
-        print('-------------------------------------------')
+        return f'Ответ неверный, верный ответ {self.answer}'
 
 def load_question() -> list:
     """
@@ -68,23 +64,31 @@ def load_question() -> list:
 
     return questions
 
-questions = load_question()
+def main():
+    questions = load_question()
 
-random.shuffle(questions)
+    random.shuffle(questions)
 
-print('Игра начинается!')
-for question in questions:
-    question.build_question()
-    question.is_correct(input())
+    print('Игра начинается!')
+    for question in questions:
+        print(question.build_question())
+        if question.is_correct(input()):
+            print(question.build_positive_feedback())
+            print('--------------------------------------')
+        else:
+            print(question.build_negative_feedback())
+            print('--------------------------------------')
 
-ball_sum = 0
-answer_count = 0
-for question in questions:
-    ball_sum += question.balls
-    if question.answer_f:
-        answer_count += 1
+    ball_sum = 0
+    answer_count = 0
+    for question in questions:
+        ball_sum += question.balls
+        if question.answer_f:
+            answer_count += 1
 
-print('Вот и всё!')
-print(f'Отвечено {answer_count} вопроса из {len(questions)}')
-print(f'Набрано баллов: {ball_sum}')
+    print('Вот и всё!')
+    print(f'Отвечено {answer_count} вопроса из {len(questions)}')
+    print(f'Набрано баллов: {ball_sum}')
 
+
+main()
